@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: quiz-web }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: quiz-web } }
+  template:
+    metadata: { labels: { app: quiz-web } }
+    spec:
+      containers:
+      - name: web
+        image: $REG/quiz-web:latest
+        ports: [{ containerPort: 3000 }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: quiz-web }
+spec:
+  selector: { app: quiz-web }
+  ports: [{ port: 80, targetPort: 3000 }]

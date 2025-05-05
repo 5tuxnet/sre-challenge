@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: quiz-api }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: quiz-api } }
+  template:
+    metadata: { labels: { app: quiz-api } }
+    spec:
+      containers:
+      - name: api
+        image: $REG/quiz-api:latest
+        ports: [{ containerPort: 4000 }]
+        envFrom: [{ secretRef: { name: smtp-creds } }]
+        volumeMounts:
+        - name: qfile
+          mountPath: /app/src/questions.json
+          subPath: questions.json
+      volumes:
+      - name: qfile
+        configMap: { name: quiz-questions }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: quiz-api }
+spec:
+  selector: { app: quiz-api }
+  ports: [{ port: 4000, targetPort: 4000 }]

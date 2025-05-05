@@ -1,0 +1,123 @@
+[
+  /* 1 ─ Linux  basics ─────────────────────────────────────────────── */
+  {
+    "id": "lin-log",
+    "title": "Crash‑looping FortiManager agent",
+    "difficulty": 1,
+    "stem": "A FortiManager agent on Ubuntu 22.04 is restarting every 30 s. "
+            "Which log do you inspect **first** to confirm whether it’s an OOM kill?",
+    "choices": [
+      { "id": "a", "text": "/var/log/kern.log",      "correct": false },
+      { "id": "b", "text": "/var/log/syslog",        "correct": true  },
+      { "id": "c", "text": "/var/log/dpkg.log",      "correct": false }
+    ],
+    "explain": "`syslog` aggregates kernel + systemd messages on Ubuntu; "
+               "OOM‑killer entries show up there before they hit kern.log."
+  },
+
+  /* 2 ─ Networking 101 ────────────────────────────────────────────── */
+  {
+    "id": "net-hop-latency",
+    "title": "Mysterious 120 ms hop",
+    "difficulty": 1,
+    "stem": "Traceroute from a pod to an external API shows hops 1‑4 ≈1 ms, hop 5 jumps to 120 ms, "
+            "then hops 6‑8 drop back to 1 ms. What’s the **most likely** cause?",
+    "choices": [
+      { "id": "a", "text": "True congestion on the link",     "correct": false },
+      { "id": "b", "text": "ICMP deprioritisation on router", "correct": true  },
+      { "id": "c", "text": "DNS lookup failure",              "correct": false }
+    ],
+    "explain": "Routers often rate‑limit ICMP; high RTT on a single hop with normal downstream hops "
+               "points to control‑plane throttling, not real latency."
+  },
+
+  /* 3 ─ Fortinet device skill ────────────────────────────────────── */
+  {
+    "id": "fgt-policy",
+    "title": "FortiGate policy order",
+    "difficulty": 2,
+    "stem": "A new deny rule for `src_net → dst_net` was added but traffic still passes. "
+            "Which CLI command helps you confirm rule hit‑count order?",
+    "choices": [
+      { "id": "a", "text": "diagnose debug flow",          "correct": true  },
+      { "id": "b", "text": "get router info routing-table", "correct": false },
+      { "id": "c", "text": "show firewall address",         "correct": false }
+    ],
+    "explain": "`diagnose debug flow` traces policy lookup in real time and shows "
+               "which rule number matches each packet."
+  },
+
+  /* 4 ─ CI/CD troubleshooting ────────────────────────────────────── */
+  {
+    "id": "cicd-rollback",
+    "title": "Failing smoke test",
+    "difficulty": 2,
+    "stem": "Jenkins pipeline fails at the smoke‑test stage. Which action is **least** disruptive?",
+    "choices": [
+      { "id": "a", "text": "Rollback to previous Docker tag",          "correct": false },
+      { "id": "b", "text": "Annotate build, skip deploy, open ticket", "correct": true  },
+      { "id": "c", "text": "Force‑deploy current build to prod",       "correct": false }
+    ],
+    "explain": "You keep production stable and document the failure for triage without shipping bad code."
+  },
+
+  /* 5 ─ Infrastructure‑as‑Code ───────────────────────────────────── */
+  {
+    "id": "iac-drift",
+    "title": "Terraform drift detected",
+    "difficulty": 2,
+    "stem": "`terraform plan` shows objects to be recreated on a FortiSwitch. "
+            "What is usually the safest first step?",
+    "choices": [
+      { "id": "a", "text": "Run `terraform apply -auto-approve`", "correct": false },
+      { "id": "b", "text": "Import real‑world state then re‑plan", "correct": true  },
+      { "id": "c", "text": "Delete the resource from state",       "correct": false }
+    ],
+    "explain": "Importing syncs drifted resources, preventing accidental rebuild of live infra."
+  },
+
+  /* 6 ─ Security / hardening ─────────────────────────────────────── */
+  {
+    "id": "sec-ssh",
+    "title": "SSH brute‑force",
+    "difficulty": 3,
+    "stem": "Zabbix alert shows 1 000 failed SSH logins/min on a jump host. "
+            "Quickest containment?",
+    "choices": [
+      { "id": "a", "text": "Add Fail2ban rule",         "correct": true  },
+      { "id": "b", "text": "Disable SSH service",       "correct": false },
+      { "id": "c", "text": "Rotate host certificates",  "correct": false }
+    ],
+    "explain": "Fail2ban blocks offending IPs within seconds without cutting access for legitimate users."
+  },
+
+  /* 7 ─ Compliance evidence ─────────────────────────────────────── */
+  {
+    "id": "soc2-evidence",
+    "title": "Change‑management proof",
+    "difficulty": 3,
+    "stem": "Auditor asks for SOC 2 evidence that infra changes are peer‑reviewed. "
+            "Which artifact addresses this most directly?",
+    "choices": [
+      { "id": "a", "text": "GitLab merge‑request approvals", "correct": true  },
+      { "id": "b", "text": "Zabbix uptime dashboard",        "correct": false },
+      { "id": "c", "text": "NTP server logs",                "correct": false }
+    ],
+    "explain": "Signed MR approvals show reviewer identity and change history—ideal for change‑management control."
+  },
+
+  /* 8 ─ Advanced networking scenario ────────────────────────────── */
+  {
+    "id": "bgp-flap",
+    "title": "BGP route flap in DC",
+    "difficulty": 3,
+    "stem": "FortiGate announces a /24 via eBGP. Route toggles every 30 s. "
+            "Which log snippet pinpoints the cause fastest?",
+    "choices": [
+      { "id": "a", "text": "BGP neighbor change messages",   "correct": true  },
+      { "id": "b", "text": "Syslog cron entries",            "correct": false },
+      { "id": "c", "text": "ARP table cache",                "correct": false }
+    ],
+    "explain": "Neighbor state transitions in BGP logs reveal whether keep‑alive or hold‑timer expiries drive the flap."
+  }
+]
